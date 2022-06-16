@@ -1,6 +1,6 @@
 import * as nintendo from 'nintendo-switch-eshop';
 import * as fs from 'fs';
-import data from './gamesList.json' assert {type: "json"}
+import data from '../models/gameList.json' assert {type: "json"}
 
 export default class Api {
     static async getA() {
