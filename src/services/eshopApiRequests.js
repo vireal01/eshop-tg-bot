@@ -1,13 +1,15 @@
 import * as nintendo from 'nintendo-switch-eshop';
 import * as fs from 'fs';
-import data from '../models/gameList.json' assert {type: "json"}
+import data from '../models/euGamesList.json' assert {type: "json"}
 
 export default class Api {
-    static async getA() {
+    static async getGamesOfEuropeRegion() {
         const ans = await nintendo.getGamesEurope()
-        fs.writeFile('gamesList.json', JSON.stringify(ans), err => {
+        fs.writeFile('./src/models/euGamesList.json', JSON.stringify(ans), err => {
             if (err) {
                 console.error(err);
+            } else {
+                console.log('Data of europe region games recieved')
             }
         });
     }
@@ -31,7 +33,7 @@ export default class Api {
     }
 }
 // Api.getGamePrice({})
-//Api.getA()
+Api.getGamesOfEuropeRegion()
 // console.log(data[0].fs_id)
 // console.log(Api.getGameObjByUrl('https://www.nintendo.co.uk/Games/Nintendo-Switch-download-software/Moonlighter-1423773.html'))
 // module.exports = Api; 
