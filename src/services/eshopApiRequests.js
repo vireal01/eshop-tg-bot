@@ -27,8 +27,7 @@ export default class Api {
         const regex = /\/Games.*/g
         const parsedUrl = url.match(regex)[0]
         let gameData
-        const data = await this.checkDataFileExists();
-        data.forEach(element => {
+        (await this.checkDataFileExists()).forEach(element => {
             if (element.url === parsedUrl) {
                 return gameData = element
             }
