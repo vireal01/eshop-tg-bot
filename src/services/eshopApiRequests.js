@@ -17,7 +17,7 @@ export default class Api {
     }
 
     static async checkDataFileExists() {
-        if (!fs.existsSync(this.dataFilePath) || fs.read(this.dataFilePath).length === 0) {
+        if (!fs.existsSync(this.dataFilePath) || fs.readFileSync(this.dataFilePath).length === 0) {
             await Api.getGamesOfEuropeRegion();
         }
         return JSON.stringify(fs.readFileSync(this.dataFilePath))
