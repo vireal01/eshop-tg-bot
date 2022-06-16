@@ -20,7 +20,7 @@ export default class Api {
         if (!fs.existsSync(this.dataFilePath) || fs.readFileSync(this.dataFilePath).length === 0) {
             await Api.getGamesOfEuropeRegion();
         }
-        return JSON.stringify(fs.readFileSync(this.dataFilePath))
+        return JSON.parse(fs.readFileSync(this.dataFilePath))
     }
 
     static async getGameObjByUrl(url) {
