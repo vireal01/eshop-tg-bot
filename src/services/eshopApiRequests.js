@@ -17,7 +17,7 @@ export default class Api {
     }
 
     static async checkDataFileExists() {
-        if (!fs.existsSync(this.dataFilePath) || fs.readFileSync(this.dataFilePath).length === 0) {
+        if (!fs.existsSync(this.dataFilePath) || fs.read(this.dataFilePath).length === 0) {
             await Api.getGamesOfEuropeRegion();
         }
         return JSON.stringify(fs.readFileSync(this.dataFilePath))
@@ -26,8 +26,9 @@ export default class Api {
     static async getGameObjByUrl(url) {
         const regex = /\/Games.*/g
         const parsedUrl = url.match(regex)[0]
-        let gameData
-        (await this.checkDataFileExists()).forEach(element => {
+        let gameData;
+        const data = await this.checkDataFileExists();
+        data.forEach(element => {
             if (element.url === parsedUrl) {
                 return gameData = element
             }
