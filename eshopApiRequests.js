@@ -1,4 +1,3 @@
-// const nintendo = require('nintendo-switch-eshop');
 import * as nintendo from 'nintendo-switch-eshop';
 import * as fs from 'fs';
 import data from './gamesList.json' assert {type: "json"}

@@ -4,7 +4,7 @@ import { Telegraf } from 'telegraf';
 import GameList from './gamelist.js';
 import GameInfo from './gameInfo.js';
 import dotenv from "dotenv";
-dotenv.config({ silent: process.env.NODE_ENV === 'production' });
+dotenv.config();
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 bot.start(async (ctx) => {
