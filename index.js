@@ -1,6 +1,4 @@
-// const { Telegraf } = require('telegraf');
 import { Telegraf } from 'telegraf';
-// const GameList = require('./gamelist');
 import GameList from './gamelist.js';
 import GameInfo from './gameInfo.js';
 import dotenv from "dotenv";
