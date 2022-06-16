@@ -57,7 +57,7 @@ export default class GameInfo{
     }
 
     static async getPrices(url){
-        const gameData = Api.getGameObjByUrl(url)
+        const gameData = await Api.getGameObjByUrl(url)
         const prices = []
         for await (const region of this.regionList){
             const priceData  = await Api.getGamePrice({country: region, gameId: gameData.nsuid_txt[0]})

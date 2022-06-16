@@ -5,5 +5,10 @@ module.exports = {
     env_production: {
        NODE_ENV: "production"
     }
-  }]
+  },
+  {
+    name   : "gameListRefresher",
+    script : "./src/scripts/refreshGamesList.js",
+  }
+]
 }
