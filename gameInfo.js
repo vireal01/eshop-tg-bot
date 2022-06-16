@@ -48,10 +48,10 @@ export default class GameInfo{
 
     static async calculatePriceInUSD(itemPrice, currency){
         const price = this.formatPrice(itemPrice);
-        let currencyConverter = new CC({from:currency, to:"USD", amount:price})
+        let currencyConverter = new CC({from:currency, to:"USD", amount:price, isDecimalComma:true})
         let priceInUsd
         await currencyConverter.convert().then((response) => {
-            priceInUsd =  response.toFixed(1)
+            priceInUsd = response.toFixed(1)
         })
         return priceInUsd
     }
@@ -67,4 +67,3 @@ export default class GameInfo{
         return prices
     }
 }
-// module.exports = GameInfo;
