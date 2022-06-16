@@ -1,6 +1,6 @@
 import { Telegraf } from 'telegraf';
-import GameList from './gamelist.js';
-import GameInfo from './gameInfo.js';
+import GameList from './services/gamelist.js';
+import GameInfo from './services/gameInfo.js';
 import dotenv from "dotenv";
 dotenv.config({ silent: process.env.NODE_ENV === 'production' });
 
