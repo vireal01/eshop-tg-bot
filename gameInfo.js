@@ -1,9 +1,11 @@
-const Api = require("./eshopApiRequests");
-const { countryCodeEmoji, emojiCountryCode } = require('country-code-emoji');
+import Api from "./eshopApiRequests.js";
+// const Api = require("./eshopApiRequests");
+import countryCodeEmoji from "country-code-emoji";
+// const { countryCodeEmoji, emojiCountryCode } = require('country-code-emoji');
 const CC = require('currency-converter-lt')
 
 
-class GameInfo{
+export default class GameInfo{
     // static regionList = ['PL', 'ZA', 'JP']
     static regionList = ['PL', 'ZA']
 
@@ -68,4 +70,4 @@ class GameInfo{
         return prices
     }
 }
-module.exports = GameInfo;
+// module.exports = GameInfo;

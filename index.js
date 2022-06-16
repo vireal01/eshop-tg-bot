@@ -1,6 +1,9 @@
-const { Telegraf } = require('telegraf');
-const GameList = require('./gamelist');
-const GameInfo = require('./gameInfo');
+// const { Telegraf } = require('telegraf');
+import { Telegraf } from 'telegraf';
+// const GameList = require('./gamelist');
+import GameList from './gamelist.js';
+import GameInfo from './gameInfo.js';
+// const GameInfo = require('./gameInfo');
 require('dotenv').config();
 
 const bot = new Telegraf(process.env.BOT_TOKEN);

@@ -1,5 +1,5 @@
-class GameList {
-    static gameTitles = ['Game 1', 'Game 2', 'Game 3']
+export default class GameList {
+    // static gameTitles = ['Game 1', 'Game 2', 'Game 3'];
 
     static addGameToList(gameTitle) {
         this.gameTitles.push(gameTitle);
@@ -10,4 +10,4 @@ class GameList {
     }
 }
 
-module.exports = GameList;
+// export default GameList;
