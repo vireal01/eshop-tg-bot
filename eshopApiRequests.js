@@ -1,9 +1,7 @@
 // const nintendo = require('nintendo-switch-eshop');
 import * as nintendo from 'nintendo-switch-eshop';
 import * as fs from 'fs';
-// const fs = require('fs');
-import * as data from './gamesList.json';
-// const data = require('./gamesList.json')
+import data from './gamesList.json' assert {type: "json"}
 
 export default class Api {
     static async getA() {
@@ -34,7 +32,7 @@ export default class Api {
     }
 }
 // Api.getGamePrice({})
-// Api.getA()
+//Api.getA()
 // console.log(data[0].fs_id)
 // console.log(Api.getGameObjByUrl('https://www.nintendo.co.uk/Games/Nintendo-Switch-download-software/Moonlighter-1423773.html'))
 // module.exports = Api; 

@@ -1,9 +1,6 @@
 import Api from "./eshopApiRequests.js";
-// const Api = require("./eshopApiRequests");
 import countryCodeEmoji from "country-code-emoji";
-// const { countryCodeEmoji, emojiCountryCode } = require('country-code-emoji');
-const CC = require('currency-converter-lt')
-
+import CC from 'currency-converter-lt';
 
 export default class GameInfo{
     // static regionList = ['PL', 'ZA', 'JP']

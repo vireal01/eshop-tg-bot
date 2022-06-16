@@ -3,8 +3,8 @@ import { Telegraf } from 'telegraf';
 // const GameList = require('./gamelist');
 import GameList from './gamelist.js';
 import GameInfo from './gameInfo.js';
-// const GameInfo = require('./gameInfo');
-require('dotenv').config();
+import dotenv from "dotenv";
+dotenv.config({ silent: process.env.NODE_ENV === 'production' });
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 bot.start(async (ctx) => {

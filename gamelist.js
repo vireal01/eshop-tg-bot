@@ -1,5 +1,5 @@
 export default class GameList {
-    // static gameTitles = ['Game 1', 'Game 2', 'Game 3'];
+     static gameTitles = ['Game 1', 'Game 2', 'Game 3'];
 
     static addGameToList(gameTitle) {
         this.gameTitles.push(gameTitle);
