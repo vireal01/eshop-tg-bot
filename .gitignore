@@ -1,4 +1,4 @@
 node_modules
 .env
-gamesList.json
+src/models/euGamesList.json
 package-lock.json

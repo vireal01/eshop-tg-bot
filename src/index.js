@@ -2,14 +2,13 @@ import { Telegraf, Markup } from 'telegraf';
 import GameList from './services/gamelist.js';
 import GameInfo from './services/gameInfo.js';
 import dotenv from "dotenv";
+import Helpers from './helpers/helperFunctions.js';
 dotenv.config({ silent: process.env.NODE_ENV === 'production' });
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 bot.start(async (ctx) => {
     ctx.reply('/keyboard - spawn keyboard \n/list - show all added games\n/addGame ${gametitle} tio add gama to the list')
 })
-bot.help((ctx) => ctx.reply('Send me a sticker'))
-// bot.on('sticker', (ctx) => ctx.reply('👍'))
 
 bot.hears(/\/addGame (.+)/, (ctx) => {
     GameList.addGameToList(ctx.match[1]);
@@ -24,27 +23,23 @@ bot.command('list', async (ctx) => {
 })
 bot.hears(/\/find (.+)/, async (ctx) => {
     const url = ctx.match[1]
-    const prices = await GameInfo.getPrices(url)
-    const stringifiedData = await GameInfo.stringifyPriceData(prices)
-    ctx.reply(stringifiedData.join('\n'))
+    if (Helpers.linkValidator(url)) {
+        const prices = await GameInfo.getPrices(url)
+        const stringifiedData = await GameInfo.stringifyPriceData(prices)
+        ctx.reply(stringifiedData.join('\n'))
+    } else {
+        ctx.reply('Please enter a valid game url')
+    }
 })
 
-// bot.command('keyboard', (ctx) =>
-//     ctx.reply('One time keyboard', Markup
-//         .keyboard(['/simple', '/inline', '/pyramid'])
-//         // .oneTime()
-//         // .resize()
-//     )
-// )
-
 bot.command('keyboard', async (ctx) => {
-    return await ctx.reply('Custom buttons keyboard', Markup
+    await ctx.reply('Custom buttons keyboard', Markup
         .keyboard([
             ['🇬🇧 Show regions', 'Add region']
         ])
-        // .oneTime()
         .resize()
     )
+    await ctx.deleteMessage()
 })
 
 bot.hears('🇬🇧 Show regions', async (ctx) => {
@@ -61,23 +56,22 @@ bot.hears('Add region', async (ctx) => {
         availableRegions.push(`/addRegion ${GameInfo.getCountyFlagByCode(countryCode)}`)
     }
     availableRegions.push('◀️')
-    return await ctx.reply('Choose a region to add', Markup
+    await ctx.reply('Choose a region to add', Markup
         .keyboard([
             availableRegions
         ])
-        // .oneTime()
-        .resize()
     )
+    await ctx.deleteMessage()
 })
 
 bot.hears('◀️', async (ctx) => {
-    return await ctx.reply('/keyboard', Markup
+    await ctx.reply('/keyboard', Markup
         .keyboard([
             ['🇬🇧 Show regions', 'Add region']
         ])
-        // .oneTime()
         .resize()
     )
+    await ctx.deleteMessage()
 })
 
 bot.hears(/\/addRegion (.+)/, async (ctx) => {
