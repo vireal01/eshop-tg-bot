@@ -1,9 +1,5 @@
 #!/bin/bash
 
 npm install
-pm2 list
-pwd
-whereis pm2
-whoami
-node -v
+pm2 restart all
 echo 'tg_bot restarted succesfully'
