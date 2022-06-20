@@ -33,4 +33,6 @@ jobs:
         host: ${{ secrets.HOST_DNS }}
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.EC2_SSH_KEY }}
-        script: bash ${{ secrets.TARGET_DIR }}.github/scripts/build.sh
+        script: |
+          pwd
+          bash ${{ secrets.TARGET_DIR }}.github/scripts/build.sh
