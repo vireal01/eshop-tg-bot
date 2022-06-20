@@ -20,13 +20,6 @@ jobs:
         REMOTE_HOST: ${{ secrets.HOST_DNS }}
         REMOTE_USER: ${{ secrets.USERNAME }}
         TARGET: ${{ secrets.TARGET_DIR }}
-    - name: Insall all modules
-#       uses: | 
-#         actions/checkout@v3
-#         actions/setup-node@v3
-#       with:
-#         node-version: 18
-      run: pwd
     - name: Restart bot deamon
       uses: appleboy/ssh-action@master
       with:
@@ -34,5 +27,5 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          pwd
+          cd ${{ secrets.TARGET_DIR }} && npm install
           bash ${{ secrets.TARGET_DIR }}.github/scripts/build.sh
