@@ -21,7 +21,8 @@ export default class Api {
             console.log('Data file is not created. Fetching the games data file')
             await Api.getGamesOfEuropeRegion();
         }
-        return JSON.parse(fs.readFileSync(this.dataFilePath))
+        const response = await JSON.parse(fs.readFileSync(this.dataFilePath))
+        return response
     }
 
     static async getGameObjByUrl(url) {
