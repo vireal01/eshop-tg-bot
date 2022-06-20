@@ -27,5 +27,4 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          bash .github/scripts/build.sh
-          echo ${{ secrets.TARGET_DIR }}
+          bash TARGET.github/scripts/build.sh
