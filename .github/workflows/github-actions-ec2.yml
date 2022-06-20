@@ -23,4 +23,4 @@ jobs:
     - name: Restart bot deamon
       run: |
         bash .github/scripts/build.sh
-        bash echo ${{ secrets.TARGET_DIR }}
+        echo ${{ secrets.TARGET_DIR }}
