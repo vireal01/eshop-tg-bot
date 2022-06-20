@@ -1,5 +1,6 @@
 #!/bin/bash
 
+npm install pm2@latest -g
 npm install
 pm2 restart tg_bot
 whereis pm2
