@@ -3,12 +3,19 @@ import { countryCodeEmoji, emojiCountryCode } from "country-code-emoji";
 import CC from 'currency-converter-lt';
 
 export default class GameInfo {
-    static availableRegionsList = ['PL', 'ZA', 'RU', 'FR', 'GB']
+    /**
+     * Country code: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+     */
+    static availableRegionsList = ['PL', 'ZA', 'RU', 'FR', 'GB', 'SE', 'NO']
     static regionList = ['PL', 'ZA']
 
     static updateRegionList(countryCode) {
         this.regionList.push(countryCode)
         this.regionList = [...new Set(this.regionList)]
+    }
+
+    static getGameData(url) {
+        return Api.getGameObjByUrl(url)
     }
 
     static async stringifyPriceData(pricesData) {
@@ -64,8 +71,7 @@ export default class GameInfo {
         return priceInUsd
     }
 
-    static async getPrices(url) {
-        const gameData = await Api.getGameObjByUrl(url)
+    static async getPrices(gameData) {
         const prices = []
         for await (const region of this.regionList) {
             const priceData = await Api.getGamePrice({ country: region, gameId: gameData.nsuid_txt[0] })
@@ -73,5 +79,24 @@ export default class GameInfo {
             prices.push(priceData)
         }
         return prices
+    }
+
+    static getGamePurchaseLink(gameData) {
+        const changeRegionLink = '🔄 Change region: \nhttps://accounts.nintendo.com/profile/edit'
+        const gamePurchaseLink = `💵 Buy game: \nhttps://ec.nintendo.com/title_purchase_confirm?title=${gameData.nsuid_txt[0]}`
+        return changeRegionLink + '\n' + gamePurchaseLink
+    }
+
+    static async getGameInfoMessage(url) {
+        const messages = {}
+        const gameData = await GameInfo.getGameData(url)
+        if (gameData === undefined) {
+            return messages.error = 'The game can\'t be found'
+        }
+        const prices = await GameInfo.getPrices(gameData)
+        const stringifiedData = await GameInfo.stringifyPriceData(prices)
+        messages.prices = stringifiedData.join('\n')
+        messages.gamePurchaseLink = this.getGamePurchaseLink(gameData)
+        return messages.prices + '\n\n' + messages.gamePurchaseLink
     }
 }

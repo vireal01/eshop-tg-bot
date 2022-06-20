@@ -24,9 +24,8 @@ bot.command('list', async (ctx) => {
 bot.hears(/\/find (.+)/, async (ctx) => {
     const url = ctx.match[1]
     if (Helpers.linkValidator(url)) {
-        const prices = await GameInfo.getPrices(url)
-        const stringifiedData = await GameInfo.stringifyPriceData(prices)
-        ctx.reply(stringifiedData.join('\n'))
+        const message = await GameInfo.getGameInfoMessage(url)
+        ctx.reply(message)
     } else {
         ctx.reply('Please enter a valid game url')
     }
