@@ -1,8 +1,7 @@
 #!/bin/bash
 
-npm install pm2@latest -g
 npm install
-pm2 restart tg_bot
+pm2 list
 whereis pm2
 whoami
 node -v
