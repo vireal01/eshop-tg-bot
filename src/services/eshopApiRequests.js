@@ -18,6 +18,7 @@ export default class Api {
 
     static async checkDataFileExists() {
         if (!fs.existsSync(this.dataFilePath) || fs.readFileSync(this.dataFilePath).length === 0) {
+            console.log('Data file is not created. Fetching the games data file')
             await Api.getGamesOfEuropeRegion();
         }
         return JSON.parse(fs.readFileSync(this.dataFilePath))
@@ -38,6 +39,7 @@ export default class Api {
 
     static async getGamePrice({ country = 'PL', gameId = '70010000034009' }) {
         const ans = await nintendo.getPrices(country, gameId)
+        console.log('Game price is requested')
         return ans.prices[0]
     }
 }
