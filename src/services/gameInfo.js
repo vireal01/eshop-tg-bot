@@ -6,16 +6,12 @@ export default class GameInfo {
     /**
      * Country code: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
      */
-    static availableRegionsList = ['PL', 'ZA', 'RU', 'FR', 'GB', 'SE', 'NO']
+    static availableRegionsList = ['PL', 'ZA', 'FR', 'GB', 'SE', 'NO']
     static regionList = ['PL', 'ZA']
 
     static updateRegionList(countryCode) {
         this.regionList.push(countryCode)
         this.regionList = [...new Set(this.regionList)]
-    }
-
-    static getGameData(url) {
-        return Api.getGameObjByUrl(url)
     }
 
     static async stringifyPriceData(pricesData) {
@@ -89,8 +85,8 @@ export default class GameInfo {
 
     static async getGameInfoMessage(url) {
         const messages = {}
-        const gameData = await GameInfo.getGameData(url)
-        if (gameData === undefined) {
+        const gameData = await Api.getGameObjByUrl(url)
+        if (!gameData) {
             return messages.error = 'The game can\'t be found'
         }
         const prices = await GameInfo.getPrices(gameData)

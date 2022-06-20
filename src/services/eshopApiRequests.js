@@ -27,11 +27,14 @@ export default class Api {
 
     static async getGameObjByUrl(url) {
         const regex = /\/Games.*/g
-        const parsedUrl = url.match(regex)[0]
+        const parsedUrl = url.match(regex)
+        if (!parsedUrl) {
+            return parsedUrl
+        }
         let gameData;
         const data = await this.checkDataFileExists();
         data.forEach(element => {
-            if (element.url === parsedUrl) {
+            if (element.url === parsedUrl[0]) {
                 return gameData = element
             }
         })
