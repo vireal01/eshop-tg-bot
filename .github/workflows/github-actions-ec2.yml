@@ -28,4 +28,4 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
           pwd
-          bash ${{ secrets.TARGET_DIR }}.github/scripts/build.sh
+          bash ~/projects/eshop-tg-bot/.github/scripts/build.sh
