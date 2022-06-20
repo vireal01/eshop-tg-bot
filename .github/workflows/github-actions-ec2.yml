@@ -26,6 +26,4 @@ jobs:
         host: ${{ secrets.HOST_DNS }}
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.EC2_SSH_KEY }}
-        script: |
-          pwd
-          bash ~/projects/eshop-tg-bot/.github/scripts/build.sh
+        script: bash ${{ secrets.TARGET_DIR }}.github/scripts/build.sh
