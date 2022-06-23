@@ -11,7 +11,7 @@ bot.start(async (ctx) => {
 })
 
 bot.hears(/\/help/, (ctx) => {
-    ctx.reply('/keyboard - spawn keyboard \n/list - show all added games\n/addGame ${gametitle} to add a game to the list\n/showGames - show list of saved games')
+    ctx.reply('/keyboard - spawn keyboard\n/addGame ${gametitle} to add a game to the list\n/list - show list of saved games')
 })
 
 bot.hears(/\/addGame (.+)/, async (ctx) => {
@@ -24,7 +24,7 @@ bot.hears(/\/addGame (.+)/, async (ctx) => {
     }
 })
 
-bot.hears(/\/showGames/, (ctx) => {
+bot.hears(/\/list/, (ctx) => {
     ctx.reply(GameList.showSavedGameListTitles())
 })
 
@@ -42,10 +42,6 @@ bot.hears(/\/find (.+)/, async (ctx) => {
     } else {
         ctx.reply('Please enter a valid game url')
     }
-})
-
-bot.command('list', async (ctx) => {
-    ctx.reply(GameList.gamesData.join('\n'))
 })
 
 bot.command('keyboard', async (ctx) => {
