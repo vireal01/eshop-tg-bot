@@ -7,20 +7,33 @@ dotenv.config({ silent: process.env.NODE_ENV === 'production' });
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 bot.start(async (ctx) => {
-    ctx.reply('/keyboard - spawn keyboard \n/list - show all added games\n/addGame ${gametitle} tio add gama to the list')
+    ctx.reply('/help')
 })
 
-bot.hears(/\/addGame (.+)/, (ctx) => {
-    GameList.addGameToList(ctx.match[1]);
-    ctx.reply(GameList.gameTitles.join('\n'))
+bot.hears(/\/help/, (ctx) => {
+    ctx.reply('/keyboard - spawn keyboard \n/list - show all added games\n/addGame ${gametitle} to add a game to the list\n/showGames - show list of saved games')
 })
+
+bot.hears(/\/addGame (.+)/, async (ctx) => {
+    const url = ctx.match[1]
+    if (Helpers.linkValidator(url)) {
+        await GameList.addGameToList(url)
+        ctx.reply('Game added to favorites')
+    } else {
+        ctx.reply('Please enter a valid game url')
+    }
+})
+
+bot.hears(/\/showGames/, (ctx) => {
+    ctx.reply(GameList.showSavedGameListTitles())
+})
+
+
 bot.hears(/\/removeGame (.+)/, (ctx) => {
     GameList.removeFromList(ctx.match[1]);
-    ctx.reply(GameList.gameTitles.join('\n'))
+    ctx.reply(GameList.gamesData.join('\n'))
 })
-bot.command('list', async (ctx) => {
-    ctx.reply(GameList.gameTitles.join('\n'))
-})
+
 bot.hears(/\/find (.+)/, async (ctx) => {
     const url = ctx.match[1]
     if (Helpers.linkValidator(url)) {
@@ -29,6 +42,10 @@ bot.hears(/\/find (.+)/, async (ctx) => {
     } else {
         ctx.reply('Please enter a valid game url')
     }
+})
+
+bot.command('list', async (ctx) => {
+    ctx.reply(GameList.gamesData.join('\n'))
 })
 
 bot.command('keyboard', async (ctx) => {
