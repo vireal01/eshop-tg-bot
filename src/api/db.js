@@ -10,6 +10,7 @@ export default class DataBaseApi {
         host: process.env.PGHOST,
         database: process.env.PGDATABASE,
         port: process.env.PGPORT,
+        password: process.env.PGPASSWORD
     }
 
     static initDatabase() {
@@ -57,12 +58,7 @@ export default class DataBaseApi {
         await pool.end()
     }
 
-    static client = new pg.Client({
-        user: process.env.PGUSER,
-        host: process.env.PGHOST,
-        database: process.env.PGDATABASE,
-        port: process.env.PGPORT,
-    })
+    static client = new pg.Client(this.poolArgs)
 }
 
 DataBaseApi.createGameTableIfNotCreated()
