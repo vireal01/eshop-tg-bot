@@ -1,4 +1,4 @@
-import { Telegraf, Markup } from 'telegraf';
+import { Telegraf, Markup, Types } from 'telegraf';
 import GameList from './services/gamelist.js';
 import GameInfo from './services/gameInfo.js';
 import dotenv from "dotenv";
@@ -49,7 +49,7 @@ bot.hears(/\/t (.+)/, async (ctx) => {
     const normalizedTitle = Helpers.normalizeTitle(title)
     if (!Helpers.titleValidator(normalizedTitle)) {
         const message = await GameInfo.getGameInfoMessageByTitle(normalizedTitle)
-        ctx.reply(message)
+        ctx.telegram.sendMessage(ctx.message.chat.id, message, { parse_mode: 'HTML' })
     } else {
         ctx.reply('Please enter a valid game url')
     }

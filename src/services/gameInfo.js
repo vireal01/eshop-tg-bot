@@ -54,8 +54,7 @@ export default class GameInfo {
             const saleAmount = elementData.isDiscount ?
                 `Sale: ${elementData.salePercent} % \n` : ''
             const saleString = elementData.isDiscount ? `\nOn sale price: ${elementData.discountPrice} \nOffer ends: ${this.formateDate(elementData.discountEndDate)}` : ''
-            formatedPrices.push(`${elementData.countyEmoji} ${saleAmount}Currency: ${elementData.localCurency}. \nFull-price ${elementData.regularPrice} ${saleString} \nUSD: ${elementData.priceInUsd}$
-            `)
+            formatedPrices.push(`<a>${elementData.countyEmoji} ${saleAmount}Currency: ${elementData.localCurency}. \nFull-price ${elementData.regularPrice} ${saleString} \nUSD: ${elementData.priceInUsd}$</a>`)
         }
         return formatedPrices
     }
@@ -106,11 +105,14 @@ export default class GameInfo {
     }
 
     static getGamePurchaseLink(gameData) {
-        const changeRegionLink = '🔄 Change region: \nhttps://accounts.nintendo.com/profile/edit'
-        const gamePurchaseLink = `💵 Buy game: \nhttps://ec.nintendo.com/title_purchase_confirm?title=${gameData.nsuid}`
+        const changeRegionLink = '<a>🔄 Change region: \nhttps://accounts.nintendo.com/profile/edit</a>'
+        const gamePurchaseLink = `<a>💵 Buy game: \nhttps://ec.nintendo.com/title_purchase_confirm?title=${gameData.nsuid}</a>`
         return changeRegionLink + '\n' + gamePurchaseLink
     }
 
+    static getGameTitle(gameData) {
+        return `<a href="https://www.nintendo.co.uk${gameData.url}">${gameData.title}</a>`
+    }
 
     static async compileInfoMessage(gameData) {
         if (!gameData) {
@@ -118,9 +120,8 @@ export default class GameInfo {
         }
         const prices = await GameInfo.getPrices(gameData)
         const stringifiedData = await GameInfo.stringifyPriceData(prices)
-        const priceText = stringifiedData.join('\n')
-        const gamePurchaseLink = this.getGamePurchaseLink(gameData)
-        return priceText + '\n\n' + gamePurchaseLink
+        const priceText = stringifiedData.join('\n\n')
+        return this.getGameTitle(gameData) + '\n\n' + priceText + '\n\n' + this.getGamePurchaseLink(gameData)
     }
 
     static async getGameInfoMessage(url) {
