@@ -25,7 +25,6 @@ export default class Api {
             column: "url",
             value: parsedUrl
         })
-        console.log(data)
         return data
     }
 

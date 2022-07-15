@@ -125,7 +125,6 @@ export default class GameInfo {
 
     static async getGameInfoMessage(url) {
         const gameData = await Api.getGameObjByUrl(url)
-        console.log(gameData)
         const ans = await this.compileInfoMessage(gameData)
         return ans
     }
