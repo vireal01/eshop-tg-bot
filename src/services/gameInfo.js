@@ -124,4 +124,19 @@ export default class GameInfo {
         messages.gamePurchaseLink = this.getGamePurchaseLink(gameData)
         return messages.prices + '\n\n' + messages.gamePurchaseLink
     }
+
+    static async getGameInfoMessageByTitle(title) {
+        const messages = {}
+        const gameData = await Api.getGameObjByTitle(title)
+        if (!gameData) {
+            return 'The game can\'t be found'
+        } else if (typeof gameData === "string") {
+            return gameData
+        }
+        const prices = await GameInfo.getPrices(gameData)
+        const stringifiedData = await GameInfo.stringifyPriceData(prices)
+        messages.prices = stringifiedData.join('\n')
+        messages.gamePurchaseLink = this.getGamePurchaseLink(gameData)
+        return messages.prices + '\n\n' + messages.gamePurchaseLink
+    }
 }

@@ -38,6 +38,21 @@ bot.hears(/\/find (.+)/, async (ctx) => {
     const url = ctx.match[1]
     if (Helpers.linkValidator(url)) {
         const message = await GameInfo.getGameInfoMessage(url)
+        if (!message) {
+            ctx.reply('something went wrong :(')
+        } else {
+            ctx.reply(message)
+        }
+    } else {
+        ctx.reply('Please enter a valid game url')
+    }
+})
+
+bot.hears(/\/t (.+)/, async (ctx) => {
+    const title = ctx.match[1]
+    const normalizedTitle = Helpers.normalizeTitle(title)
+    if (!Helpers.titleValidator(normalizedTitle)) {
+        const message = await GameInfo.getGameInfoMessageByTitle(normalizedTitle)
         ctx.reply(message)
     } else {
         ctx.reply('Please enter a valid game url')

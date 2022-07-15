@@ -60,15 +60,22 @@ export default class DataBaseApi {
 
     static async getGameDataFromBdByColumn({ table, column, value }) {
         const pool = new pg.Pool(this.poolArgs)
+        let response;
         pool.query(
             `SELECT * FROM ${table} WHERE ${column} = ${value};`,
             (err, res) => {
                 if (err !== undefined) {
                     console.log(err)
+                    response = 'Game can\'t be found'
                 }
-                return JSON.parse(JSON.stringify(res["rows"][0]))
+                if (!res["rows"].length) {
+                    response = "Game can\'t be found"
+                } else {
+                    response = JSON.parse(JSON.stringify(res["rows"][0]))
+                }
             })
         await pool.end()
+        return response;
     }
 
     static client = new pg.Client(this.poolArgs)

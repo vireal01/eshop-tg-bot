@@ -6,6 +6,10 @@ export default class Helpers {
         return /^(http|https):\/\/[^ "]+$/.test(url);
     }
 
+    static titleValidator(normalizedTitle) {
+        return !/[ ]*/.test(normalizedTitle);
+    }
+
     static normalizeTitle(titleString) {
         return titleString.normalize("NFD")
             .replace(/\p{Diacritic}/gu, '')

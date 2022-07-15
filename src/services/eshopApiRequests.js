@@ -1,12 +1,8 @@
 import * as nintendo from 'nintendo-switch-eshop';
-import * as fs from 'fs';
 import DataBaseApi from '../api/db.js';
 import ModifyData from '../api/modifyDataFromNintendoApi.js';
 
 export default class Api {
-    static dataFilePath = './src/models/euGamesList.json'
-    static dataJapanFilePath = './src/models/jpGamesList.json'
-
     static async getGamesOfEuropeRegion() {
         const ans = await nintendo.getGamesEurope()
         await DataBaseApi.createGameTableIfNotCreated()
@@ -14,39 +10,8 @@ export default class Api {
             const modifiedGameItem = ModifyData.modifyData(gameItem)
             await DataBaseApi.updateGamesTable(modifiedGameItem)
         }
-
-        fs.writeFile(this.dataFilePath, JSON.stringify(ans), err => {
-            if (err) {
-                console.error(err);
-            } else {
-                console.log('Data of europe region games recieved')
-            }
-        });
     }
 
-    static async getGamesOfJapanRegion() {
-        const ans = await nintendo.getGamesJapan()
-        fs.writeFile(this.dataJapanFilePath, JSON.stringify(ans), err => {
-            if (err) {
-                console.error(err);
-            } else {
-                console.log('Data of japan region games recieved')
-            }
-        });
-    }
-
-    static async checkDataFileExists() {
-        if (!fs.existsSync(this.dataFilePath) || fs.readFileSync(this.dataFilePath).length === 0) {
-            console.log('European region data file is not created. Fetching the games data file')
-            await Api.getGamesOfEuropeRegion();
-        }
-        // if (!fs.existsSync(this.dataJapanFilePath) || fs.readFileSync(this.dataJapanFilePath).length === 0) {
-        //     console.log('Japan region data file is not created. Fetching the games data file')
-        //     await Api.getGamesOfJapanRegion()
-        // }
-        const response = await JSON.parse(fs.readFileSync(this.dataFilePath))
-        return response
-    }
 
     static async getGameObjByUrl(url) {
         const regex = /\/Games.*/g
@@ -58,7 +23,16 @@ export default class Api {
             table: "games",
             column: "url",
             value: parsedUrl
-        }).then(res => { return res })
+        }).then((res) => res)
+    }
+
+    static async getGameObjByTitle(title) {
+        const modifiedTitle = JSON.stringify(title).replaceAll('"', '\'')
+        return DataBaseApi.getGameDataFromBdByColumn({
+            table: "games",
+            column: "normalized_title",
+            value: modifiedTitle
+        })
     }
 
     static async getGamePrice({ country = 'PL', gameId = '70010000034009' }) {
