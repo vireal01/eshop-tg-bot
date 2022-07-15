@@ -38,11 +38,7 @@ bot.hears(/\/find (.+)/, async (ctx) => {
     const url = ctx.match[1]
     if (Helpers.linkValidator(url)) {
         const message = await GameInfo.getGameInfoMessage(url)
-        if (!message) {
-            ctx.reply('something went wrong :(')
-        } else {
-            ctx.reply(message)
-        }
+        ctx.reply(message)
     } else {
         ctx.reply('Please enter a valid game url')
     }

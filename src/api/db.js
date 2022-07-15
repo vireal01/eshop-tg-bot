@@ -66,10 +66,8 @@ export default class DataBaseApi {
             (err, res) => {
                 if (err !== undefined) {
                     console.log(err)
-                    response = 'Game can\'t be found'
-                }
-                if (!res["rows"].length) {
-                    response = "Game can\'t be found"
+                } else if (!res["rows"].length) {
+                    // response = undefined (by default)
                 } else {
                     response = JSON.parse(JSON.stringify(res["rows"][0]))
                 }

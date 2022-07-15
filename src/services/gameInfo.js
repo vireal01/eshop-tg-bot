@@ -111,32 +111,30 @@ export default class GameInfo {
         return changeRegionLink + '\n' + gamePurchaseLink
     }
 
-    static async getGameInfoMessage(url) {
-        const messages = {}
-        const gameData = await Api.getGameObjByUrl(url).then(res => {
-            if (!res) {
-                return messages.error = 'The game can\'t be found'
-            }
-        })
-        const prices = await GameInfo.getPrices(gameData)
-        const stringifiedData = await GameInfo.stringifyPriceData(prices)
-        messages.prices = stringifiedData.join('\n')
-        messages.gamePurchaseLink = this.getGamePurchaseLink(gameData)
-        return messages.prices + '\n\n' + messages.gamePurchaseLink
-    }
 
-    static async getGameInfoMessageByTitle(title) {
-        const messages = {}
-        const gameData = await Api.getGameObjByTitle(title)
+    static async compileInfoMessage(gameData) {
         if (!gameData) {
             return 'The game can\'t be found'
-        } else if (typeof gameData === "string") {
-            return gameData
         }
         const prices = await GameInfo.getPrices(gameData)
         const stringifiedData = await GameInfo.stringifyPriceData(prices)
-        messages.prices = stringifiedData.join('\n')
-        messages.gamePurchaseLink = this.getGamePurchaseLink(gameData)
-        return messages.prices + '\n\n' + messages.gamePurchaseLink
+        const priceText = stringifiedData.join('\n')
+        const gamePurchaseLink = this.getGamePurchaseLink(gameData)
+        return priceText + '\n\n' + gamePurchaseLink
+    }
+
+    static async getGameInfoMessage(url) {
+        const gameData = await Api.getGameObjByUrl(url)
+        console.log(gameData)
+        const ans = await this.compileInfoMessage(gameData)
+        return ans
+    }
+
+    static async getGameInfoMessageByTitle(title) {
+        const gameData = await Api.getGameObjByTitle(title)
+        if (typeof gameData === "string") {
+            return gameData
+        }
+        return this.compileInfoMessage(gameData)
     }
 }

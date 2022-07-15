@@ -15,15 +15,18 @@ export default class Api {
 
     static async getGameObjByUrl(url) {
         const regex = /\/Games.*/g
-        const parsedUrl = JSON.stringify((url.match(regex))[0]).replaceAll('"', '\'')
-        if (!parsedUrl) {
-            return parsedUrl
+        const validatedUrl = url.match(regex);
+        if (!validatedUrl) {
+            return undefined
         }
-        await DataBaseApi.getGameDataFromBdByColumn({
+        const parsedUrl = JSON.stringify(validatedUrl[0]).replaceAll('"', '\'')
+        const data = await DataBaseApi.getGameDataFromBdByColumn({
             table: "games",
             column: "url",
             value: parsedUrl
-        }).then((res) => res)
+        })
+        console.log(data)
+        return data
     }
 
     static async getGameObjByTitle(title) {
