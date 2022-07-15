@@ -2,7 +2,6 @@ import * as nintendo from 'nintendo-switch-eshop';
 import * as fs from 'fs';
 import DataBaseApi from '../api/db.js';
 import ModifyData from '../api/modifyDataFromNintendoApi.js';
-// import data from '../models/euGamesList.json' assert {type: "json"}
 
 export default class Api {
     static dataFilePath = './src/models/euGamesList.json'
@@ -51,18 +50,15 @@ export default class Api {
 
     static async getGameObjByUrl(url) {
         const regex = /\/Games.*/g
-        const parsedUrl = url.match(regex)
+        const parsedUrl = JSON.stringify((url.match(regex))[0]).replaceAll('"', '\'')
         if (!parsedUrl) {
             return parsedUrl
         }
-        let gameData;
-        const data = await this.checkDataFileExists();
-        data.forEach(element => {
-            if (element.url === parsedUrl[0]) {
-                return gameData = element
-            }
-        })
-        return gameData
+        await DataBaseApi.getGameDataFromBdByColumn({
+            table: "games",
+            column: "url",
+            value: parsedUrl
+        }).then(res => { return res })
     }
 
     static async getGamePrice({ country = 'PL', gameId = '70010000034009' }) {
@@ -71,5 +67,3 @@ export default class Api {
         return ans.prices[0]
     }
 }
-
-Api.getGamesOfEuropeRegion();

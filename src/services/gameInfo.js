@@ -98,7 +98,7 @@ export default class GameInfo {
     static async getPrices(gameData) {
         const prices = []
         for await (const region of this.regionList) {
-            const priceData = await Api.getGamePrice({ country: region, gameId: gameData.nsuid_txt[0] })
+            const priceData = await Api.getGamePrice({ country: region, gameId: gameData.nsuid })
             priceData.region = region
             prices.push(priceData)
         }
@@ -107,16 +107,17 @@ export default class GameInfo {
 
     static getGamePurchaseLink(gameData) {
         const changeRegionLink = '🔄 Change region: \nhttps://accounts.nintendo.com/profile/edit'
-        const gamePurchaseLink = `💵 Buy game: \nhttps://ec.nintendo.com/title_purchase_confirm?title=${gameData.nsuid_txt[0]}`
+        const gamePurchaseLink = `💵 Buy game: \nhttps://ec.nintendo.com/title_purchase_confirm?title=${gameData.nsuid}`
         return changeRegionLink + '\n' + gamePurchaseLink
     }
 
     static async getGameInfoMessage(url) {
         const messages = {}
-        const gameData = await Api.getGameObjByUrl(url)
-        if (!gameData) {
-            return messages.error = 'The game can\'t be found'
-        }
+        const gameData = await Api.getGameObjByUrl(url).then(res => {
+            if (!res) {
+                return messages.error = 'The game can\'t be found'
+            }
+        })
         const prices = await GameInfo.getPrices(gameData)
         const stringifiedData = await GameInfo.stringifyPriceData(prices)
         messages.prices = stringifiedData.join('\n')

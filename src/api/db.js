@@ -58,7 +58,18 @@ export default class DataBaseApi {
         await pool.end()
     }
 
+    static async getGameDataFromBdByColumn({ table, column, value }) {
+        const pool = new pg.Pool(this.poolArgs)
+        pool.query(
+            `SELECT * FROM ${table} WHERE ${column} = ${value};`,
+            (err, res) => {
+                if (err !== undefined) {
+                    console.log(err)
+                }
+                return JSON.parse(JSON.stringify(res["rows"][0]))
+            })
+        await pool.end()
+    }
+
     static client = new pg.Client(this.poolArgs)
 }
-
-DataBaseApi.createGameTableIfNotCreated()

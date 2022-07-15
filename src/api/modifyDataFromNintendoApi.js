@@ -1,6 +1,4 @@
 import Helpers from '../helpers/helperFunctions.js'
-import dataSample from '../models/gameDataSample.js'
-import DataBaseApi from './db.js'
 
 export default class ModifyData {
     static modifyData(data) {
@@ -30,6 +28,3 @@ export default class ModifyData {
         price_lowest_f: 13.49,
     }
 }
-
-// const data = ModifyData.modifyData(dataSample.euData)
-// DataBaseApi.updateGamesTable(data)
