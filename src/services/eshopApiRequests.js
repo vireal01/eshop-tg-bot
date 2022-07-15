@@ -1,5 +1,7 @@
 import * as nintendo from 'nintendo-switch-eshop';
 import * as fs from 'fs';
+import DataBaseApi from '../api/db.js';
+import ModifyData from '../api/modifyDataFromNintendoApi.js';
 // import data from '../models/euGamesList.json' assert {type: "json"}
 
 export default class Api {
@@ -8,6 +10,12 @@ export default class Api {
 
     static async getGamesOfEuropeRegion() {
         const ans = await nintendo.getGamesEurope()
+        await DataBaseApi.createGameTableIfNotCreated()
+        for await (const gameItem of ans) {
+            const modifiedGameItem = ModifyData.modifyData(gameItem)
+            await DataBaseApi.updateGamesTable(modifiedGameItem)
+        }
+
         fs.writeFile(this.dataFilePath, JSON.stringify(ans), err => {
             if (err) {
                 console.error(err);
@@ -59,3 +67,5 @@ export default class Api {
         return ans.prices[0]
     }
 }
+
+Api.getGamesOfEuropeRegion();

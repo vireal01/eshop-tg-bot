@@ -1,16 +1,20 @@
+import Helpers from '../helpers/helperFunctions.js'
 import dataSample from '../models/gameDataSample.js'
-import DataBaseApi from './backend.js'
+import DataBaseApi from './db.js'
 
-class PrepareData {
-
+export default class ModifyData {
     static modifyData(data) {
-        const modifyedData = {}
-        modifyedData.fs_id = JSON.stringify(data.fs_id).replaceAll('"', '\'')
-        modifyedData.url = JSON.stringify(data.url).replaceAll('"', '\'')
-        modifyedData.image_url = JSON.stringify(data.image_url).replaceAll('"', '\'')
-        modifyedData.nsuid = Number.parseInt(data.nsuid_txt[0])
-        modifyedData.title = JSON.stringify((data.title).replaceAll('"', '')).replaceAll('"', '\'')
-        return modifyedData
+        try {
+            const modifyedData = {}
+            modifyedData.fs_id = JSON.stringify(data.fs_id).replaceAll('"', '\'')
+            modifyedData.url = JSON.stringify(data.url).replaceAll('"', '\'')
+            modifyedData.image_url = JSON.stringify(data.image_url).replaceAll('"', '\'')
+            modifyedData.nsuid = Number.parseInt(data.nsuid_txt[0])
+            modifyedData.title = JSON.stringify((data.title).replaceAll('"', '').replaceAll('\'', '')).replaceAll('"', '\'')
+            modifyedData.normalizedTitle = JSON.stringify(Helpers.normalizeTitle(data.title)).replaceAll('"', '\'')
+            return modifyedData
+        } catch (error) {
+        }
     }
 
     static dataSample = {
@@ -27,5 +31,5 @@ class PrepareData {
     }
 }
 
-const data = PrepareData.modifyData(dataSample.euData)
-DataBaseApi.updateGamesTable(data)
+// const data = ModifyData.modifyData(dataSample.euData)
+// DataBaseApi.updateGamesTable(data)
