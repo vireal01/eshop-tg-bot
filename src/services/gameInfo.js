@@ -21,10 +21,37 @@ export default class GameInfo {
             const discountPrice = pasrsedElement.discount_price
             const priceToCalculate = discountPrice ? discountPrice?.amount : regularPrice.amount
             const priceInUsd = await this.calculatePriceInUSD(priceToCalculate, regularPrice.currency)
-            const saleAmount = discountPrice ?
-                `${(this.calculateSalePercent(regularPrice.amount, discountPrice.amount))}% \n` : ''
-            const saleString = discountPrice ? `\nOn sale price: ${discountPrice.amount} \nOffer ends: ${this.formateDate(discountPrice.start_datetime)}` : ''
-            formatedPrices.push(`${countyEmoji} Sale: ${saleAmount}Currency: ${regularPrice.currency}. \nFull-price ${regularPrice.amount} ${saleString} \nUSD: ${priceInUsd}$
+            const id = pasrsedElement.title_id
+            let salePercent = null;
+            if (isDiscount) {
+                salePercent = this.calculateSalePercent(regularPrice.amount, discountPrice.amount)
+            }
+            const formatedData = {
+                priceInUsd: priceInUsd,
+                isDiscount,
+                countyEmoji,
+                regularPrice: regularPrice.amount,
+                localCurency: regularPrice.currency,
+                discountPrice: isDiscount ? discountPrice.amount : null,
+                discountEndDate: isDiscount ? discountPrice.end_datetime : null,
+                salePercent,
+                id
+            }
+            formatedPrices.push(JSON.parse(JSON.stringify(formatedData)))
+        }
+        return formatedPrices
+    }
+
+    static async stringifyPriceData(pricesData) {
+        //{"title_id":70010000011030,"sales_status":"onsale","regular_price":{"amount":"R328.00","currency":"ZAR","raw_value":"328"},"discount_price":{"amount":"R65.60","currency":"ZAR","raw_value":"65.60","start_datetime":"2022-05-24T13:00:00Z","end_datetime":"2022-06-23T21:59:59Z"},"gold_point":{"basic_gift_gp":"33","basic_gift_rate":"0.05","consume_gp":"0","extra_gold_points":[],"gift_gp":"33","gift_rate":"0.05"}}
+        const formatedPrices = []
+        const arrOfPrices = await this.formatGamePriceArrayToCustomFields(pricesData)
+        const sortedArray = arrOfPrices.sort((a, b) => a.priceInUsd - b.priceInUsd)
+        for (const elementData of sortedArray) {
+            const saleAmount = elementData.isDiscount ?
+                `Sale: ${elementData.salePercent} % \n` : ''
+            const saleString = elementData.isDiscount ? `\nOn sale price: ${elementData.discountPrice} \nOffer ends: ${this.formateDate(elementData.discountEndDate)}` : ''
+            formatedPrices.push(`${elementData.countyEmoji} ${saleAmount}Currency: ${elementData.localCurency}. \nFull-price ${elementData.regularPrice} ${saleString} \nUSD: ${elementData.priceInUsd}$
             `)
         }
         return formatedPrices

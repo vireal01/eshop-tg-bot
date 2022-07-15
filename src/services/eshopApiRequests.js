@@ -4,6 +4,7 @@ import * as fs from 'fs';
 
 export default class Api {
     static dataFilePath = './src/models/euGamesList.json'
+    static dataJapanFilePath = './src/models/jpGamesList.json'
 
     static async getGamesOfEuropeRegion() {
         const ans = await nintendo.getGamesEurope()
@@ -16,11 +17,28 @@ export default class Api {
         });
     }
 
+    static async getGamesOfJapanRegion() {
+        const ans = await nintendo.getGamesJapan()
+        fs.writeFile(this.dataJapanFilePath, JSON.stringify(ans), err => {
+            if (err) {
+                console.error(err);
+            } else {
+                console.log('Data of japan region games recieved')
+            }
+        });
+    }
+
     static async checkDataFileExists() {
         if (!fs.existsSync(this.dataFilePath) || fs.readFileSync(this.dataFilePath).length === 0) {
+            console.log('European region data file is not created. Fetching the games data file')
             await Api.getGamesOfEuropeRegion();
         }
-        return JSON.parse(fs.readFileSync(this.dataFilePath))
+        // if (!fs.existsSync(this.dataJapanFilePath) || fs.readFileSync(this.dataJapanFilePath).length === 0) {
+        //     console.log('Japan region data file is not created. Fetching the games data file')
+        //     await Api.getGamesOfJapanRegion()
+        // }
+        const response = await JSON.parse(fs.readFileSync(this.dataFilePath))
+        return response
     }
 
     static async getGameObjByUrl(url) {
@@ -41,8 +59,3 @@ export default class Api {
         return ans.prices[0]
     }
 }
-// Api.getGamePrice({})
-// Api.getGamesOfEuropeRegion()
-// console.log(data[0].fs_id)
-// console.log(Api.getGameObjByUrl('https://www.nintendo.co.uk/Games/Nintendo-Switch-download-software/Moonlighter-1423773.html'))
-// module.exports = Api; 
