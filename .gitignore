@@ -1,4 +1,5 @@
 node_modules
 .env
 src/models/euGamesList.json
+src/models/jpGamesList.json
 package-lock.json

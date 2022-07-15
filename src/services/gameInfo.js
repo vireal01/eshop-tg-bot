@@ -24,6 +24,7 @@ export default class GameInfo {
             const isDiscount = discountPrice ? true : false
             const priceToCalculate = discountPrice ? discountPrice?.amount : regularPrice.amount
             const priceInUsd = await this.calculatePriceInUSD(priceToCalculate, regularPrice.currency)
+            const id = pasrsedElement.title_id
             let salePercent = null;
             if (isDiscount) {
                 salePercent = this.calculateSalePercent(regularPrice.amount, discountPrice.amount)
@@ -36,7 +37,8 @@ export default class GameInfo {
                 localCurency: regularPrice.currency,
                 discountPrice: isDiscount ? discountPrice.amount : null,
                 discountEndDate: isDiscount ? discountPrice.end_datetime : null,
-                salePercent
+                salePercent,
+                id
             }
             formatedPrices.push(JSON.parse(JSON.stringify(formatedData)))
         }
