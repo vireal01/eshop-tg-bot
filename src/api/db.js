@@ -13,10 +13,6 @@ export default class DataBaseApi {
         password: process.env.PGPASSWORD
     }
 
-    static initDatabase() {
-        this.reateGameTableIfNotCreated()
-    }
-
     static async createGameTableIfNotCreated() {
         const pool = new pg.Pool(this.poolArgs)
         pool.query(
