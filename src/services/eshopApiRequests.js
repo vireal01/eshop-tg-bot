@@ -4,12 +4,13 @@ import ModifyData from '../api/modifyDataFromNintendoApi.js';
 
 export default class Api {
     static async getGamesOfEuropeRegion() {
-        const ans = await nintendo.getGamesEurope()
-        await DataBaseApi.createGameTableIfNotCreated()
+        let ans = await nintendo.getGamesEurope()
         for await (const gameItem of ans) {
             const modifiedGameItem = ModifyData.modifyData(gameItem)
             await DataBaseApi.updateGamesTable(modifiedGameItem)
         }
+        // remove large file data from memory
+        ans = null
     }
 
 
