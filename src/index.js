@@ -38,7 +38,7 @@ bot.hears(/\/find (.+)/, async (ctx) => {
     const url = ctx.match[1]
     if (Helpers.linkValidator(url)) {
         const message = await GameInfo.getGameInfoMessage(url)
-        ctx.reply(message)
+        ctx.telegram.sendMessage(ctx.message.chat.id, message, { parse_mode: 'HTML' })
     } else {
         ctx.reply('Please enter a valid game url')
     }

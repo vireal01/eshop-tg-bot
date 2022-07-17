@@ -10,6 +10,7 @@ export default class ModifyData {
             modifyedData.nsuid = Number.parseInt(data.nsuid_txt[0])
             modifyedData.title = JSON.stringify((data.title).replaceAll('"', '').replaceAll('\'', '')).replaceAll('"', '\'')
             modifyedData.normalizedTitle = JSON.stringify(Helpers.normalizeTitle(data.title)).replaceAll('"', '\'')
+            modifyedData.age_rating_value = Number.parseInt(data.age_rating_value) ? Number.parseInt(data.age_rating_value) : 0
             return modifyedData
         } catch (error) {
         }

@@ -22,7 +22,8 @@ export default class DataBaseApi {
             image_url TEXT,
             title TEXT,
             normalized_title TEXT,
-            fs_id TEXT
+            fs_id TEXT,
+            age_rating_value SMALLINT
         );`, (err, res) => {
             console.log(err, res)
             pool.end()
@@ -35,8 +36,14 @@ export default class DataBaseApi {
         }
         const pool = new pg.Pool(this.poolArgs)
         pool.query(
-            `INSERT INTO games(nsuid, url, image_url, title, normalized_title, fs_id)
-            VALUES(${modifiedData.nsuid}, ${modifiedData.url}, ${modifiedData.image_url}, ${modifiedData.title}, ${modifiedData.normalizedTitle}, ${modifiedData.fs_id})
+            `INSERT INTO games(nsuid, url, image_url, title, normalized_title, fs_id, age_rating_value)
+            VALUES(${modifiedData.nsuid}, 
+                ${modifiedData.url}, 
+                ${modifiedData.image_url}, 
+                ${modifiedData.title}, 
+                ${modifiedData.normalizedTitle}, 
+                ${modifiedData.fs_id}, 
+                ${modifiedData.age_rating_value})
             ON CONFLICT(nsuid)
 	        DO 
 	        UPDATE 
@@ -44,7 +51,8 @@ export default class DataBaseApi {
             image_url = ${modifiedData.image_url},
             title = ${modifiedData.title},
             normalized_title = ${modifiedData.normalizedTitle},
-            fs_id = ${modifiedData.fs_id};`,
+            fs_id = ${modifiedData.fs_id},
+            age_rating_value = ${modifiedData.age_rating_value};`,
             (err) => {
                 if (err !== undefined) {
                     console.log(modifiedData)
