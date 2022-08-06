@@ -55,6 +55,17 @@ bot.hears(/\/t (.+)/, async (ctx) => {
     }
 })
 
+bot.hears(/\/add (.+)/, async (ctx) => {
+    const title = ctx.match[1]
+    const normalizedTitle = Helpers.normalizeTitle(title)
+    if (!Helpers.titleValidator(normalizedTitle)) {
+        const message = await GameInfo.addGameToFav(title)
+        ctx.reply(message)
+    } else {
+        ctx.reply('Please enter a valid game title')
+    }
+})
+
 bot.command('keyboard', async (ctx) => {
     await ctx.reply('Custom buttons keyboard', Markup
         .keyboard([

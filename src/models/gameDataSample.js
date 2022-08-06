@@ -72,4 +72,31 @@ export default class DataSamples {
         ScreenshotImgFlg: 1,
         ScreenshotImgURL: "https://img-eshop.cdn.nintendo.net/i/1c34e431fa5d1b1198515e22e1beafe45b9050b5b5b28403f15cd315af0944f7.jpg"
     }
+
+    static priceDataSample = {
+        title_id: 70070000011030,
+        sales_status: 'onsale',
+        regular_price: { amount: 'R1,129.00', currency: 'ZAR', raw_value: '1129' },
+        gold_point: {
+            basic_gift_gp: '565',
+            basic_gift_rate: '0.05',
+            consume_gp: '0',
+            extra_gold_points: [],
+            gift_gp: '565',
+            gift_rate: '0.05'
+        },
+        region: 'ZA'
+    }
+
+    static modifiedPriceData = {
+        priceInUsd: '2682.0',
+        isDiscount: false,
+        countyEmoji: '🇿🇦',
+        regularPrice: 'R450.00',
+        localCurency: 'ZAR',
+        discountPrice: null,
+        discountEndDate: null,
+        salePercent: null,
+        id: 70010000033132
+    }
 }

@@ -1,6 +1,8 @@
 import Api from "./eshopApiRequests.js";
 import { countryCodeEmoji, emojiCountryCode } from "country-code-emoji";
 import CC from 'currency-converter-lt';
+import DataBaseApi from "../api/db.js";
+import ModifyData from "../api/modifyDataFromNintendoApi.js";
 
 export default class GameInfo {
     /**
@@ -136,5 +138,22 @@ export default class GameInfo {
             return gameData
         }
         return this.compileInfoMessage(gameData)
+    }
+
+    static async addGameToFav(title) {
+        const gameData = await Api.getGameObjByTitle(title)
+        if (typeof gameData === "string") {
+            return gameData
+        }
+        if (!gameData) {
+            return 'Game can\'t be found'
+        }
+        const modifiedGameItem = ModifyData.modifyStoredGameData(gameData)
+        try {
+            await DataBaseApi.updateGamesTable(modifiedGameItem, true)
+        } catch (error) {
+            return 'Error during the adding to favorites'
+        }
+        return `${modifiedGameItem.title} successfully added to favorites`
     }
 }

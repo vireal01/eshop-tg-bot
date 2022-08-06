@@ -41,7 +41,7 @@ export default class Api {
     static async getGameObjByTitle(title) {
         const modifiedTitle = JSON.stringify(title).replaceAll('"', '\'')
         return DataBaseApi.getGameDataFromBdByColumn({
-            table: "games",
+            table: DataBaseApi.gameTableName,
             column: "normalized_title",
             value: modifiedTitle
         })

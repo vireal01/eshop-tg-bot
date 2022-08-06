@@ -4,6 +4,8 @@ dotenv.config({ silent: process.env.NODE_ENV === 'production' });
 
 export default class DataBaseApi {
     static gameTableName = 'Games'
+    static favGamesTableName = 'Favorites'
+    static favGamesPricesTableName = 'FavPrices'
 
     static poolArgs = {
         user: process.env.PGUSER,
@@ -13,10 +15,11 @@ export default class DataBaseApi {
         password: process.env.PGPASSWORD
     }
 
-    static async createGameTableIfNotCreated() {
+    static async createGameTableIfNotCreated(isFavTable = false) {
+        const tableName = isFavTable ? this.favGamesTableName : this.gameTableName
         const pool = new pg.Pool(this.poolArgs)
         pool.query(
-            `CREATE TABLE IF NOT EXISTS ${this.gameTableName} (
+            `CREATE TABLE IF NOT EXISTS ${tableName} (
             nsuid BIGINT PRIMARY KEY,
             url TEXT,
             image_url TEXT,
@@ -30,13 +33,49 @@ export default class DataBaseApi {
         })
     }
 
-    static async updateGamesTable(modifiedData) {
+    static async createFavGamesTableIfNotCreated() {
+        const pool = new pg.Pool(this.poolArgs)
+        pool.query(
+            `CREATE TABLE IF NOT EXISTS ${this.favGamesTableName} (
+            nsuid BIGINT PRIMARY KEY,
+            url TEXT,
+            image_url TEXT,
+            title TEXT,
+            normalized_title TEXT,
+            fs_id TEXT,
+            age_rating_value SMALLINT
+        );`, (err, res) => {
+            console.log(err, res)
+            pool.end()
+        })
+    }
+
+    static async createFavGamesPricesTableIfNotCreated() {
+        const pool = new pg.Pool(this.poolArgs)
+        pool.query(
+            `CREATE TABLE IF NOT EXISTS ${this.favGamesPricesTableName} (
+            id BIGINT PRIMARY KEY,
+            priceInUsd TEXT,
+            isDiscount BOOLEAN,
+            countyEmoji TEXT,
+            regularPrice TEXT,
+            localCurency TEXT,
+            salePercent TEXT,
+            discountEndDate TEXT
+        );`, (err, res) => {
+            console.log(err, res)
+            pool.end()
+        })
+    }
+
+    static async updateGamesTable(modifiedData, isFavTable = false) {
+        const tableName = isFavTable ? this.favGamesTableName : this.gameTableName
         if (!modifiedData) {
             return null
         }
         const pool = new pg.Pool(this.poolArgs)
         pool.query(
-            `INSERT INTO games(nsuid, url, image_url, title, normalized_title, fs_id, age_rating_value)
+            `INSERT INTO ${tableName}(nsuid, url, image_url, title, normalized_title, fs_id, age_rating_value)
             VALUES(${modifiedData.nsuid}, 
                 ${modifiedData.url}, 
                 ${modifiedData.image_url}, 
