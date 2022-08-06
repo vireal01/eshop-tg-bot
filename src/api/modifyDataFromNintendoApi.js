@@ -43,8 +43,10 @@ export default class ModifyData {
             modifyedData.localCurency = JSON.stringify(data.localCurency).replaceAll('"', '\'')
             modifyedData.discountPrice = JSON.stringify(data.discountPrice).replaceAll('"', '\'')
             modifyedData.discountEndDate = JSON.stringify(data.discountEndDate).replaceAll('"', '\'')
+            modifyedData.discountEndTimestamp = JSON.stringify(data.discountEndTimestamp).replaceAll('"', '\'')
             modifyedData.salePercent = JSON.stringify(data.salePercent).replaceAll('"', '\'')
             modifyedData.id = data.id
+            modifyedData.countyEmoji = JSON.stringify(data.countyEmoji).replaceAll('"', '\'')
             modifyedData.idAndRegion = JSON.stringify(data.idAndRegion).replaceAll('"', '\'')
             modifyedData.region = JSON.stringify(data.region).replaceAll('"', '\'')
             return modifyedData

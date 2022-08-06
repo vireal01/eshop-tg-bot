@@ -41,11 +41,14 @@ export default class DataBaseApi {
             idAndRegion TEXT PRIMARY KEY,
             id bigint NOT NULL,
             priceInUsd TEXT,
+            discountPrice TEXT,
             isDiscount BOOLEAN,
             regularPrice TEXT,
             localCurency TEXT,
             salePercent TEXT,
-            discountEndDate BIGINT,
+            discountEndTimestamp BIGINT,
+            discountEndDate Text,
+            countyEmoji TEXT,
             region TEXT
         );`, (err, res) => {
             console.log(err, res)
@@ -117,22 +120,28 @@ export default class DataBaseApi {
                 (idAndRegion,
                 id,
                 priceInUsd,
+                discountPrice,
                 isDiscount,
                 regularPrice,
                 localCurency,
                 salePercent,
+                discountEndTimestamp,
                 discountEndDate,
-                region)
+                region,
+                countyEmoji)
             VALUES(
                 ${modifiedData.idAndRegion}, 
                 ${modifiedData.id}, 
                 ${modifiedData.priceInUsd}, 
+                ${modifiedData.discountPrice}, 
                 ${modifiedData.isDiscount}, 
                 ${modifiedData.regularPrice}, 
                 ${modifiedData.localCurency}, 
                 ${modifiedData.salePercent}, 
+                ${modifiedData.discountEndTimestamp},
                 ${modifiedData.discountEndDate},
-                ${modifiedData.region})
+                ${modifiedData.region},
+                ${modifiedData.countyEmoji})
             ON CONFLICT(idAndRegion)
 	        DO 
 	        UPDATE 
@@ -140,12 +149,15 @@ export default class DataBaseApi {
             idAndRegion = ${modifiedData.idAndRegion},
             id = ${modifiedData.id},
             priceInUsd = ${modifiedData.priceInUsd},
+            discountPrice = ${modifiedData.discountPrice},
             isDiscount = ${modifiedData.isDiscount},
             regularPrice = ${modifiedData.regularPrice},
             localCurency = ${modifiedData.localCurency},
             salePercent = ${modifiedData.salePercent},
+            discountEndTimestamp = ${modifiedData.discountEndTimestamp},
             discountEndDate = ${modifiedData.discountEndDate},
-            region = ${modifiedData.region};`,
+            region = ${modifiedData.region},
+            countyEmoji = ${modifiedData.countyEmoji};`,
             (err) => {
                 if (err !== undefined) {
                     console.log(modifiedData)
@@ -159,7 +171,7 @@ export default class DataBaseApi {
         const pool = new pg.Pool(this.poolArgs)
         pool.query(
             `DELETE FROM ${this.favGamesPricesTableName}
-            WHERE discountenddate < ${new Date().getTime()};`, (err, res) => {
+            WHERE discountEndTimestamp < ${new Date().getTime()};`, (err, res) => {
             console.log(err, res)
             pool.end()
         })

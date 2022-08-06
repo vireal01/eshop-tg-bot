@@ -16,52 +16,49 @@ export default class GameInfo {
         this.regionList = [...new Set(this.regionList)]
     }
 
-    static async formatGamePriceArrayToCustomFields(pricesData) {
-        const formatedPrices = [];
-        for await (const priceElementData of pricesData) {
-            const parsedElement = JSON.parse(JSON.stringify(priceElementData))
-            const countyEmoji = countryCodeEmoji(parsedElement.region)
-            const regularPrice = parsedElement.regular_price
-            const discountPrice = parsedElement.discount_price
-            const isDiscount = discountPrice ? true : false
-            const priceToCalculate = discountPrice ? discountPrice?.amount : regularPrice.amount
-            const priceInUsd = await this.calculatePriceInUSD(priceToCalculate, regularPrice.currency)
-            const id = parsedElement.title_id
-            const region = parsedElement.region
-            let salePercent = null;
-            if (isDiscount) {
-                salePercent = this.calculateSalePercent(regularPrice.amount, discountPrice.amount)
-            }
-            const formatedData = {
-                priceInUsd: priceInUsd,
-                isDiscount,
-                countyEmoji,
-                regularPrice: regularPrice.amount,
-                localCurency: regularPrice.currency,
-                discountPrice: isDiscount ? discountPrice.amount : null,
-                discountEndDate: isDiscount ? (new Date(discountPrice.end_datetime).getTime()) : null,
-                salePercent,
-                id,
-                region,
-                idAndRegion: id + region
-            }
-            console.log(formatedData)
-            formatedPrices.push(JSON.parse(JSON.stringify(formatedData)))
-            await DataBaseApi.updateGamePriceTable(ModifyData.modifyPriceData(formatedData))
+    static async formatGamePriceArrayToCustomFields(priceData) {
+        const parsedElement = JSON.parse(JSON.stringify(priceData))
+        const countyEmoji = countryCodeEmoji(parsedElement.region)
+        const regularPrice = parsedElement.regular_price
+        const discountPrice = parsedElement.discount_price
+        const isDiscount = discountPrice ? true : false
+        const priceToCalculate = discountPrice ? discountPrice?.amount : regularPrice.amount
+        const priceInUsd = await this.calculatePriceInUSD(priceToCalculate, regularPrice.currency)
+        const id = parsedElement.title_id
+        const region = parsedElement.region
+        let salePercent = null;
+        if (isDiscount) {
+            salePercent = this.calculateSalePercent(regularPrice.amount, discountPrice.amount)
         }
-        return formatedPrices
+        const formatedData = {
+            priceInUsd: priceInUsd,
+            isDiscount,
+            countyEmoji,
+            regularPrice: regularPrice.amount,
+            localCurency: regularPrice.currency,
+            discountPrice: isDiscount ? discountPrice.amount : null,
+            discountEndTimestamp: isDiscount ? (new Date(discountPrice.end_datetime).getTime()) : null,
+            discountEndDate: isDiscount ? discountPrice.end_datetime : null,
+            salePercent,
+            id,
+            region,
+            idAndRegion: id + region
+        }
+        console.log(formatedData)
+        await DataBaseApi.updateGamePriceTable(ModifyData.modifyPriceData(formatedData))
+        return JSON.parse(JSON.stringify(formatedData))
     }
 
     static async stringifyPriceData(pricesData) {
         //{"title_id":70010000011030,"sales_status":"onsale","regular_price":{"amount":"R328.00","currency":"ZAR","raw_value":"328"},"discount_price":{"amount":"R65.60","currency":"ZAR","raw_value":"65.60","start_datetime":"2022-05-24T13:00:00Z","end_datetime":"2022-06-23T21:59:59Z"},"gold_point":{"basic_gift_gp":"33","basic_gift_rate":"0.05","consume_gp":"0","extra_gold_points":[],"gift_gp":"33","gift_rate":"0.05"}}
         const formatedPrices = []
-        const arrOfPrices = await this.formatGamePriceArrayToCustomFields(pricesData)
-        const sortedArray = arrOfPrices.sort((a, b) => a.priceInUsd - b.priceInUsd)
+        // const arrOfPrices = await this.formatGamePriceArrayToCustomFields(pricesData)
+        const sortedArray = pricesData.sort((a, b) => a.priceinusd - b.priceinusd)
         for (const elementData of sortedArray) {
-            const saleAmount = elementData.isDiscount ?
-                `Sale: ${elementData.salePercent} % \n` : ''
-            const saleString = elementData.isDiscount ? `\nOn sale price: ${elementData.discountPrice} \nOffer ends: ${this.formateDate(elementData.discountEndDate)}` : ''
-            formatedPrices.push(`<a>${elementData.countyEmoji} ${saleAmount}Currency: ${elementData.localCurency}. \nFull-price ${elementData.regularPrice} ${saleString} \nUSD: ${elementData.priceInUsd}$</a>`)
+            const saleAmount = elementData.isdiscount ?
+                `Sale: ${elementData.salepercent} % \n` : ''
+            const saleString = elementData.isdiscount ? `\nOn sale price: ${elementData.discountprice} \nOffer ends: ${this.formateDate(elementData.discountenddate)}` : ''
+            formatedPrices.push(`<a>${elementData.countyemoji} ${saleAmount}Currency: ${elementData.localcurency}. \nFull-price ${elementData.regularprice} ${saleString} \nUSD: ${elementData.priceinusd}$</a>`)
         }
         return formatedPrices
     }
@@ -104,11 +101,25 @@ export default class GameInfo {
     static async getPrices(gameData) {
         const prices = []
         for await (const region of this.regionList) {
-            const priceData = await Api.getGamePrice({ country: region, gameId: gameData.nsuid })
-            priceData.region = region
+            let priceData = await this.findPriceInDbPricesTable(gameData.nsuid, region)
+            if (!priceData) {
+                const rawPriceData = await Api.getGamePrice({ country: region, gameId: gameData.nsuid })
+                rawPriceData.region = region
+                priceData = await this.formatGamePriceArrayToCustomFields(rawPriceData)
+            }
             prices.push(priceData)
         }
         return prices
+    }
+
+    static async findPriceInDbPricesTable(id, region) {
+        const idAndRegion = id + region
+        const data = await DataBaseApi.getGameDataFromBdByColumn({
+            table: DataBaseApi.favGamesPricesTableName,
+            column: 'idandregion',
+            value: JSON.stringify(idAndRegion).replaceAll('"', "'")
+        })
+        return data
     }
 
     static getGamePurchaseLink(gameData) {
