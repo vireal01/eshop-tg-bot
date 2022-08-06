@@ -38,17 +38,17 @@ export default class DataBaseApi {
         const pool = new pg.Pool(this.poolArgs)
         pool.query(
             `CREATE TABLE IF NOT EXISTS ${this.favGamesPricesTableName} (
-            idAndRegion TEXT PRIMARY KEY,
+            id_and_region TEXT PRIMARY KEY,
             id bigint NOT NULL,
-            priceInUsd TEXT,
-            discountPrice TEXT,
-            isDiscount BOOLEAN,
-            regularPrice TEXT,
-            localCurency TEXT,
-            salePercent TEXT,
-            discountEndTimestamp BIGINT,
-            discountEndDate Text,
-            countyEmoji TEXT,
+            price_in_usd TEXT,
+            discount_price TEXT,
+            is_discount BOOLEAN,
+            regular_price TEXT,
+            local_curency TEXT,
+            sale_percent TEXT,
+            discount_end_timestamp BIGINT,
+            discount_end_date Text,
+            county_emoji TEXT,
             region TEXT
         );`, (err, res) => {
             console.log(err, res)
@@ -117,47 +117,47 @@ export default class DataBaseApi {
         const pool = new pg.Pool(this.poolArgs)
         pool.query(
             `INSERT INTO ${tableName}
-                (idAndRegion,
+                (id_and_region,
                 id,
-                priceInUsd,
-                discountPrice,
-                isDiscount,
-                regularPrice,
-                localCurency,
-                salePercent,
-                discountEndTimestamp,
-                discountEndDate,
+                price_in_usd,
+                discount_price,
+                is_discount,
+                regular_price,
+                local_curency,
+                sale_percent,
+                discount_end_timestamp,
+                discount_end_date,
                 region,
-                countyEmoji)
+                county_emoji)
             VALUES(
-                ${modifiedData.idAndRegion}, 
+                ${modifiedData.id_and_region}, 
                 ${modifiedData.id}, 
-                ${modifiedData.priceInUsd}, 
-                ${modifiedData.discountPrice}, 
-                ${modifiedData.isDiscount}, 
-                ${modifiedData.regularPrice}, 
-                ${modifiedData.localCurency}, 
-                ${modifiedData.salePercent}, 
-                ${modifiedData.discountEndTimestamp},
-                ${modifiedData.discountEndDate},
+                ${modifiedData.price_in_usd}, 
+                ${modifiedData.discount_price}, 
+                ${modifiedData.is_discount}, 
+                ${modifiedData.regular_price}, 
+                ${modifiedData.local_curency}, 
+                ${modifiedData.sale_percent}, 
+                ${modifiedData.discount_end_timestamp},
+                ${modifiedData.discount_end_date},
                 ${modifiedData.region},
-                ${modifiedData.countyEmoji})
-            ON CONFLICT(idAndRegion)
+                ${modifiedData.county_emoji})
+            ON CONFLICT(id_and_region)
 	        DO 
 	        UPDATE 
 	        SET 
-            idAndRegion = ${modifiedData.idAndRegion},
+            id_and_region = ${modifiedData.id_and_region},
             id = ${modifiedData.id},
-            priceInUsd = ${modifiedData.priceInUsd},
-            discountPrice = ${modifiedData.discountPrice},
-            isDiscount = ${modifiedData.isDiscount},
-            regularPrice = ${modifiedData.regularPrice},
-            localCurency = ${modifiedData.localCurency},
-            salePercent = ${modifiedData.salePercent},
-            discountEndTimestamp = ${modifiedData.discountEndTimestamp},
-            discountEndDate = ${modifiedData.discountEndDate},
+            price_in_usd = ${modifiedData.price_in_usd},
+            discount_price = ${modifiedData.discount_price},
+            is_discount = ${modifiedData.is_discount},
+            regular_price = ${modifiedData.regular_price},
+            local_curency = ${modifiedData.local_curency},
+            sale_percent = ${modifiedData.sale_percent},
+            discount_end_timestamp = ${modifiedData.discount_end_timestamp},
+            discount_end_date = ${modifiedData.discount_end_date},
             region = ${modifiedData.region},
-            countyEmoji = ${modifiedData.countyEmoji};`,
+            county_emoji = ${modifiedData.county_emoji};`,
             (err) => {
                 if (err !== undefined) {
                     console.log(modifiedData)
@@ -171,7 +171,7 @@ export default class DataBaseApi {
         const pool = new pg.Pool(this.poolArgs)
         pool.query(
             `DELETE FROM ${this.favGamesPricesTableName}
-            WHERE discountEndTimestamp < ${new Date().getTime()};`, (err, res) => {
+            WHERE discount_end_timestamp < ${new Date().getTime()};`, (err, res) => {
             console.log(err, res)
             pool.end()
         })

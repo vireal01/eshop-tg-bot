@@ -18,31 +18,31 @@ export default class GameInfo {
 
     static async formatGamePriceArrayToCustomFields(priceData) {
         const parsedElement = JSON.parse(JSON.stringify(priceData))
-        const countyEmoji = countryCodeEmoji(parsedElement.region)
-        const regularPrice = parsedElement.regular_price
-        const discountPrice = parsedElement.discount_price
-        const isDiscount = discountPrice ? true : false
-        const priceToCalculate = discountPrice ? discountPrice?.amount : regularPrice.amount
-        const priceInUsd = await this.calculatePriceInUSD(priceToCalculate, regularPrice.currency)
+        const county_emoji = countryCodeEmoji(parsedElement.region)
+        const regular_price = parsedElement.regular_price
+        const discount_price = parsedElement.discount_price
+        const is_discount = discount_price ? true : false
+        const priceToCalculate = discount_price ? discount_price?.amount : regular_price.amount
+        const price_in_usd = await this.calculatePriceInUsd(priceToCalculate, regular_price.currency)
         const id = parsedElement.title_id
         const region = parsedElement.region
-        let salePercent = null;
-        if (isDiscount) {
-            salePercent = this.calculateSalePercent(regularPrice.amount, discountPrice.amount)
+        let sale_percent = null;
+        if (is_discount) {
+            sale_percent = this.calculatesale_percent(regular_price.amount, discount_price.amount)
         }
         const formatedData = {
-            priceInUsd: priceInUsd,
-            isDiscount,
-            countyEmoji,
-            regularPrice: regularPrice.amount,
-            localCurency: regularPrice.currency,
-            discountPrice: isDiscount ? discountPrice.amount : null,
-            discountEndTimestamp: isDiscount ? (new Date(discountPrice.end_datetime).getTime()) : null,
-            discountEndDate: isDiscount ? discountPrice.end_datetime : null,
-            salePercent,
+            price_in_usd: price_in_usd,
+            is_discount: is_discount,
+            county_emoji: county_emoji,
+            regular_price: regular_price.amount,
+            local_curency: regular_price.currency,
+            discount_price: is_discount ? discount_price.amount : null,
+            discount_end_timestamp: is_discount ? (new Date(discount_price.end_datetime).getTime()) : null,
+            discount_end_date: is_discount ? discount_price.end_datetime : null,
+            sale_percent: sale_percent,
             id,
             region,
-            idAndRegion: id + region
+            id_and_region: id + region
         }
         console.log(formatedData)
         await DataBaseApi.updateGamePriceTable(ModifyData.modifyPriceData(formatedData))
@@ -53,12 +53,12 @@ export default class GameInfo {
         //{"title_id":70010000011030,"sales_status":"onsale","regular_price":{"amount":"R328.00","currency":"ZAR","raw_value":"328"},"discount_price":{"amount":"R65.60","currency":"ZAR","raw_value":"65.60","start_datetime":"2022-05-24T13:00:00Z","end_datetime":"2022-06-23T21:59:59Z"},"gold_point":{"basic_gift_gp":"33","basic_gift_rate":"0.05","consume_gp":"0","extra_gold_points":[],"gift_gp":"33","gift_rate":"0.05"}}
         const formatedPrices = []
         // const arrOfPrices = await this.formatGamePriceArrayToCustomFields(pricesData)
-        const sortedArray = pricesData.sort((a, b) => a.priceinusd - b.priceinusd)
+        const sortedArray = pricesData.sort((a, b) => a.price_in_usd - b.price_in_usd)
         for (const elementData of sortedArray) {
-            const saleAmount = elementData.isdiscount ?
-                `Sale: ${elementData.salepercent} % \n` : ''
-            const saleString = elementData.isdiscount ? `\nOn sale price: ${elementData.discountprice} \nOffer ends: ${this.formateDate(elementData.discountenddate)}` : ''
-            formatedPrices.push(`<a>${elementData.countyemoji} ${saleAmount}Currency: ${elementData.localcurency}. \nFull-price ${elementData.regularprice} ${saleString} \nUSD: ${elementData.priceinusd}$</a>`)
+            const saleAmount = elementData.is_discount ?
+                `Sale: ${elementData.sale_percent} % \n` : ''
+            const saleString = elementData.is_discount ? `\nOn sale price: ${elementData.discount_price} \nOffer ends: ${this.formateDate(elementData.discount_end_date)}` : ''
+            formatedPrices.push(`<a>${elementData.county_emoji} ${saleAmount}Currency: ${elementData.local_curency}. \nFull-price ${elementData.regular_price} ${saleString} \nUSD: ${elementData.price_in_usd}$</a>`)
         }
         return formatedPrices
     }
@@ -71,8 +71,8 @@ export default class GameInfo {
         return emojiCountryCode(countryFlag)
     }
 
-    static calculateSalePercent(fullPrice, discountPrice) {
-        return ((1 - this.formatPrice(discountPrice) / this.formatPrice(fullPrice)) * 100).toFixed(0)
+    static calculatesale_percent(fullPrice, discount_price) {
+        return ((1 - this.formatPrice(discount_price) / this.formatPrice(fullPrice)) * 100).toFixed(0)
     }
 
     static formatPrice(price) {
@@ -88,7 +88,7 @@ export default class GameInfo {
         return date.toLocaleString('en-US', options)
     }
 
-    static async calculatePriceInUSD(itemPrice, currency) {
+    static async calculatePriceInUsd(itemPrice, currency) {
         const price = this.formatPrice(itemPrice);
         let currencyConverter = new CC({ from: currency, to: "USD", amount: price, isDecimalComma: true })
         let priceInUsd
@@ -116,7 +116,7 @@ export default class GameInfo {
         const idAndRegion = id + region
         const data = await DataBaseApi.getGameDataFromBdByColumn({
             table: DataBaseApi.favGamesPricesTableName,
-            column: 'idandregion',
+            column: 'id_and_region',
             value: JSON.stringify(idAndRegion).replaceAll('"', "'")
         })
         return data

@@ -89,14 +89,14 @@ export default class DataSamples {
     }
 
     static modifiedPriceData = {
-        priceInUsd: '2682.0',
-        isDiscount: false,
-        countyEmoji: '🇿🇦',
-        regularPrice: 'R450.00',
-        localCurency: 'ZAR',
-        discountPrice: null,
-        discountEndDate: null,
-        salePercent: null,
+        price_in_usd: '2682.0',
+        is_discount: false,
+        county_emoji: '🇿🇦',
+        regular_price: 'R450.00',
+        local_curency: 'ZAR',
+        discount_price: null,
+        discount_end_date: null,
+        sale_percent: null,
         id: 70010000033132
     }
 }

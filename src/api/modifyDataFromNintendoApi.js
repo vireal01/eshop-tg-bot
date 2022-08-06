@@ -36,18 +36,18 @@ export default class ModifyData {
     static modifyPriceData(data) {
         try {
             const modifyedData = {}
-            modifyedData.priceInUsd = data.priceInUsd
-            modifyedData.isDiscount = data.isDiscount
-            modifyedData.countyEmoji = JSON.stringify(data.countyEmoji)
-            modifyedData.regularPrice = JSON.stringify(data.regularPrice).replaceAll('"', '\'')
-            modifyedData.localCurency = JSON.stringify(data.localCurency).replaceAll('"', '\'')
-            modifyedData.discountPrice = JSON.stringify(data.discountPrice).replaceAll('"', '\'')
-            modifyedData.discountEndDate = JSON.stringify(data.discountEndDate).replaceAll('"', '\'')
-            modifyedData.discountEndTimestamp = JSON.stringify(data.discountEndTimestamp).replaceAll('"', '\'')
-            modifyedData.salePercent = JSON.stringify(data.salePercent).replaceAll('"', '\'')
+            modifyedData.price_in_usd = data.price_in_usd
+            modifyedData.is_discount = data.is_discount
+            modifyedData.county_emoji = JSON.stringify(data.county_emoji)
+            modifyedData.regular_price = JSON.stringify(data.regular_price).replaceAll('"', '\'')
+            modifyedData.local_curency = JSON.stringify(data.local_curency).replaceAll('"', '\'')
+            modifyedData.discount_price = JSON.stringify(data.discount_price).replaceAll('"', '\'')
+            modifyedData.discount_end_date = JSON.stringify(data.discount_end_date).replaceAll('"', '\'')
+            modifyedData.discount_end_timestamp = JSON.stringify(data.discount_end_timestamp).replaceAll('"', '\'')
+            modifyedData.sale_percent = JSON.stringify(data.sale_percent).replaceAll('"', '\'')
             modifyedData.id = data.id
-            modifyedData.countyEmoji = JSON.stringify(data.countyEmoji).replaceAll('"', '\'')
-            modifyedData.idAndRegion = JSON.stringify(data.idAndRegion).replaceAll('"', '\'')
+            modifyedData.county_emoji = JSON.stringify(data.county_emoji).replaceAll('"', '\'')
+            modifyedData.id_and_region = JSON.stringify(data.id_and_region).replaceAll('"', '\'')
             modifyedData.region = JSON.stringify(data.region).replaceAll('"', '\'')
             return modifyedData
         } catch (error) {
