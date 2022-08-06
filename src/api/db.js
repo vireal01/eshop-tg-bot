@@ -45,7 +45,7 @@ export default class DataBaseApi {
             regularPrice TEXT,
             localCurency TEXT,
             salePercent TEXT,
-            discountEndDate TEXT,
+            discountEndDate BIGINT,
             region TEXT
         );`, (err, res) => {
             console.log(err, res)
@@ -153,6 +153,16 @@ export default class DataBaseApi {
                 }
             })
         await pool.end()
+    }
+
+    static clearPricesWithEndedDeals() {
+        const pool = new pg.Pool(this.poolArgs)
+        pool.query(
+            `DELETE FROM ${this.favGamesPricesTableName}
+            WHERE discountenddate < ${new Date().getTime()};`, (err, res) => {
+            console.log(err, res)
+            pool.end()
+        })
     }
 
     static client = new pg.Client(this.poolArgs)

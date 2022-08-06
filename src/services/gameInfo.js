@@ -39,7 +39,7 @@ export default class GameInfo {
                 regularPrice: regularPrice.amount,
                 localCurency: regularPrice.currency,
                 discountPrice: isDiscount ? discountPrice.amount : null,
-                discountEndDate: isDiscount ? discountPrice.end_datetime : null,
+                discountEndDate: isDiscount ? (new Date(discountPrice.end_datetime).getTime()) : null,
                 salePercent,
                 id,
                 region,

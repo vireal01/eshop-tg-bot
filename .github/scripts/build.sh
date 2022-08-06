@@ -1,5 +1,5 @@
 #!/bin/bash
 
-pm2 restart 0
+pm2 restart all
 echo 'tg_bot restarted succesfully'
 node src/api/initDb.js
