@@ -103,9 +103,7 @@ export default class GameInfo {
         for await (const region of this.regionList) {
             let priceData = await this.findPriceInDbPricesTable(gameData.nsuid, region)
             // reset priceData if game is on sale but non-sale price is stored
-            console.log(gameData.price_has_discount)
-            console.log(priceData.discount_price)
-            if (priceData.discount_price === null && gameData.price_has_discount) {
+            if (priceData?.discount_price === null && gameData.price_has_discount) {
                 priceData = undefined
             }
             if (!priceData) {
