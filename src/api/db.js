@@ -5,7 +5,7 @@ dotenv.config({ silent: process.env.NODE_ENV === 'production' });
 export default class DataBaseApi {
     static gameTableName = 'Games'
     static favGamesTableName = 'Favorites'
-    static favGamesPricesTableName = 'FavPrices'
+    static favGamesPricesTableName = 'Prices'
 
     static poolArgs = {
         user: process.env.PGUSER,
@@ -26,6 +26,7 @@ export default class DataBaseApi {
             title TEXT,
             normalized_title TEXT,
             fs_id TEXT,
+            price_has_discount BOOLEAN,
             age_rating_value SMALLINT
         );`, (err, res) => {
             console.log(err, res)
@@ -33,35 +34,19 @@ export default class DataBaseApi {
         })
     }
 
-    static async createFavGamesTableIfNotCreated() {
-        const pool = new pg.Pool(this.poolArgs)
-        pool.query(
-            `CREATE TABLE IF NOT EXISTS ${this.favGamesTableName} (
-            nsuid BIGINT PRIMARY KEY,
-            url TEXT,
-            image_url TEXT,
-            title TEXT,
-            normalized_title TEXT,
-            fs_id TEXT,
-            age_rating_value SMALLINT
-        );`, (err, res) => {
-            console.log(err, res)
-            pool.end()
-        })
-    }
-
-    static async createFavGamesPricesTableIfNotCreated() {
+    static async createGamesPricesTableIfNotCreated() {
         const pool = new pg.Pool(this.poolArgs)
         pool.query(
             `CREATE TABLE IF NOT EXISTS ${this.favGamesPricesTableName} (
-            id BIGINT PRIMARY KEY,
+            idAndRegion TEXT PRIMARY KEY,
+            id bigint NOT NULL,
             priceInUsd TEXT,
             isDiscount BOOLEAN,
-            countyEmoji TEXT,
             regularPrice TEXT,
             localCurency TEXT,
             salePercent TEXT,
-            discountEndDate TEXT
+            discountEndDate TEXT,
+            region TEXT
         );`, (err, res) => {
             console.log(err, res)
             pool.end()
@@ -75,13 +60,14 @@ export default class DataBaseApi {
         }
         const pool = new pg.Pool(this.poolArgs)
         pool.query(
-            `INSERT INTO ${tableName}(nsuid, url, image_url, title, normalized_title, fs_id, age_rating_value)
+            `INSERT INTO ${tableName}(nsuid, url, image_url, title, normalized_title, fs_id, price_has_discount, age_rating_value)
             VALUES(${modifiedData.nsuid}, 
                 ${modifiedData.url}, 
                 ${modifiedData.image_url}, 
                 ${modifiedData.title}, 
                 ${modifiedData.normalizedTitle}, 
                 ${modifiedData.fs_id}, 
+                ${modifiedData.price_has_discount}, 
                 ${modifiedData.age_rating_value})
             ON CONFLICT(nsuid)
 	        DO 
@@ -91,6 +77,7 @@ export default class DataBaseApi {
             title = ${modifiedData.title},
             normalized_title = ${modifiedData.normalizedTitle},
             fs_id = ${modifiedData.fs_id},
+            price_has_discount = ${modifiedData.price_has_discount},
             age_rating_value = ${modifiedData.age_rating_value};`,
             (err) => {
                 if (err !== undefined) {
@@ -117,6 +104,55 @@ export default class DataBaseApi {
             })
         await pool.end()
         return response;
+    }
+
+    static async updateGamePriceTable(modifiedData) {
+        const tableName = this.favGamesPricesTableName
+        if (!modifiedData) {
+            return null
+        }
+        const pool = new pg.Pool(this.poolArgs)
+        pool.query(
+            `INSERT INTO ${tableName}
+                (idAndRegion,
+                id,
+                priceInUsd,
+                isDiscount,
+                regularPrice,
+                localCurency,
+                salePercent,
+                discountEndDate,
+                region)
+            VALUES(
+                ${modifiedData.idAndRegion}, 
+                ${modifiedData.id}, 
+                ${modifiedData.priceInUsd}, 
+                ${modifiedData.isDiscount}, 
+                ${modifiedData.regularPrice}, 
+                ${modifiedData.localCurency}, 
+                ${modifiedData.salePercent}, 
+                ${modifiedData.discountEndDate},
+                ${modifiedData.region})
+            ON CONFLICT(idAndRegion)
+	        DO 
+	        UPDATE 
+	        SET 
+            idAndRegion = ${modifiedData.idAndRegion},
+            id = ${modifiedData.id},
+            priceInUsd = ${modifiedData.priceInUsd},
+            isDiscount = ${modifiedData.isDiscount},
+            regularPrice = ${modifiedData.regularPrice},
+            localCurency = ${modifiedData.localCurency},
+            salePercent = ${modifiedData.salePercent},
+            discountEndDate = ${modifiedData.discountEndDate},
+            region = ${modifiedData.region};`,
+            (err) => {
+                if (err !== undefined) {
+                    console.log(modifiedData)
+                    console.log(err)
+                }
+            })
+        await pool.end()
     }
 
     static client = new pg.Client(this.poolArgs)

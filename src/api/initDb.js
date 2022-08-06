@@ -4,8 +4,8 @@ import DataBaseApi from "./db.js"
 
 async function initDb() {
     await DataBaseApi.createGameTableIfNotCreated()
-    await DataBaseApi.createFavGamesTableIfNotCreated()
-    await DataBaseApi.createFavGamesPricesTableIfNotCreated()
+    await DataBaseApi.createGameTableIfNotCreated(true)
+    await DataBaseApi.createGamesPricesTableIfNotCreated()
     await Api.getGamesOfEuropeRegion()
 }
 

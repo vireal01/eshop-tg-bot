@@ -19,14 +19,15 @@ export default class GameInfo {
     static async formatGamePriceArrayToCustomFields(pricesData) {
         const formatedPrices = [];
         for await (const priceElementData of pricesData) {
-            const pasrsedElement = JSON.parse(JSON.stringify(priceElementData))
-            const countyEmoji = countryCodeEmoji(pasrsedElement.region)
-            const regularPrice = pasrsedElement.regular_price
-            const discountPrice = pasrsedElement.discount_price
+            const parsedElement = JSON.parse(JSON.stringify(priceElementData))
+            const countyEmoji = countryCodeEmoji(parsedElement.region)
+            const regularPrice = parsedElement.regular_price
+            const discountPrice = parsedElement.discount_price
             const isDiscount = discountPrice ? true : false
             const priceToCalculate = discountPrice ? discountPrice?.amount : regularPrice.amount
             const priceInUsd = await this.calculatePriceInUSD(priceToCalculate, regularPrice.currency)
-            const id = pasrsedElement.title_id
+            const id = parsedElement.title_id
+            const region = parsedElement.region
             let salePercent = null;
             if (isDiscount) {
                 salePercent = this.calculateSalePercent(regularPrice.amount, discountPrice.amount)
@@ -40,9 +41,13 @@ export default class GameInfo {
                 discountPrice: isDiscount ? discountPrice.amount : null,
                 discountEndDate: isDiscount ? discountPrice.end_datetime : null,
                 salePercent,
-                id
+                id,
+                region,
+                idAndRegion: id + region
             }
+            console.log(formatedData)
             formatedPrices.push(JSON.parse(JSON.stringify(formatedData)))
+            await DataBaseApi.updateGamePriceTable(ModifyData.modifyPriceData(formatedData))
         }
         return formatedPrices
     }
