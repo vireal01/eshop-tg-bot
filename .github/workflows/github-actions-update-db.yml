@@ -3,8 +3,7 @@ name: update-bd-cron-action
 # Trigger deployment only on push to master branch
 on:
   schedule:
-    - cron:  '20 */1 * * *'    # At every hour
-
+    - cron:  '49 */1 * * *'    # At every hour
 
 
 jobs:
@@ -14,14 +13,6 @@ jobs:
     steps:
     - name: chrone
       uses: cardinalby/schedule-job-action@v1
-      with: 
-        ghToken: ${{ secrets.WORKFLOWS_TOKEN }}
-
-    - name: Update db
-      uses: appleboy/ssh-action@master
       with:
-        host: ${{ secrets.HOST_DNS }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.EC2_SSH_KEY }}
-        script: |
-          bash ${{ secrets.TARGET_DIR }}.github/scripts/initDb.sh
+        ghToken: ${{ secrets.WORKFLOWS_TOKEN }}
+        templateYmlFile: '.github-scheduled-workflows/github-actions-update-db.yml'
