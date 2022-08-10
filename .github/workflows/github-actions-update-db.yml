@@ -3,7 +3,7 @@ name: update-bd-cron-action
 # Trigger deployment only on push to master branch
 on:
   schedule:
-    - cron:  '15 */1 * * *'    # At every hour
+    - cron:  '20 */1 * * *'    # At every hour
 
 
 
