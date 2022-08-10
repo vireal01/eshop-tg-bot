@@ -1,18 +1,27 @@
-name: update-bd-cron-action
 
-# Trigger deployment only on push to master branch
+name: update bd
+
+       # Controls when the workflow will run
 on:
+  # Triggers the workflow every 5 minutes
   schedule:
-    - cron:  '*/5 * * * *'    # At every hour
+    - cron: "5 */2 * * *"
 
-
+     # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  deploy:
+  # This workflow contains a single job called "cron"
+  cron:
     name: Deploy to EC2
     runs-on: ubuntu-latest
     steps:
-    - name: chrone
-      uses: cardinalby/schedule-job-action@v1
+    - name: Update db
+      uses: appleboy/ssh-action@master
       with:
-        ghToken: ${{ secrets.WORKFLOWS_TOKEN }}
-        templateYmlFile: '${{ secrets.TARGET_DIR }}.github-scheduled-workflows/github-actions-update-db.yml'
+        host: ${{ secrets.HOST_DNS }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          bash ${{ secrets.TARGET_DIR }}.github/scripts/initDb.sh
+
+
+
