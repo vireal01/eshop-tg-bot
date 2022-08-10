@@ -3,7 +3,7 @@ name: update-bd-cron-action
 # Trigger deployment only on push to master branch
 on:
   schedule:
-    - cron:  '15 * * * *'    # At every hour
+    - cron:  '24 * * * *'    # At every hour
 
 
 jobs:
@@ -15,4 +15,4 @@ jobs:
       uses: cardinalby/schedule-job-action@v1
       with:
         ghToken: ${{ secrets.WORKFLOWS_TOKEN }}
-        templateYmlFile: '../.github-scheduled-workflows/github-actions-update-db.yml'
+        templateYmlFile: '${{ secrets.TARGET_DIR }}.github-scheduled-workflows/github-actions-update-db.yml'
