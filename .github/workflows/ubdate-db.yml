@@ -1,7 +1,7 @@
-name: "Close stale issues"
+name: "Update Game DB"
 on:
   schedule:
-  - cron: "*/5 * * * *"
+  - cron: "55 13 * * *"
 
 jobs:
   deploy:
@@ -24,4 +24,5 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
+          cd ${{ secrets.TARGET_DIR }}
           bash ${{ secrets.TARGET_DIR }}.github/scripts/initDb.sh
