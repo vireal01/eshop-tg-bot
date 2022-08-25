@@ -1,7 +1,7 @@
 name: "Update Game DB"
 on:
   schedule:
-  - cron: "0 */5 * * *"
+  - cron: "0 6 */1 * *"
 
 jobs:
   deploy:
